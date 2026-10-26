@@ -1,0 +1,166 @@
+<main class="student-dashboard">
+  <header class="student-header">
+    <div class="student-info">
+      <div class="student-avatar">
+        <img *ngIf="avatar(); else defaultAvatar" [src]="avatar()" alt="">
+
+        <ng-template #defaultAvatar>
+          <span aria-hidden="true">🧭</span>
+        </ng-template>
+      </div>
+
+      <div>
+        <p class="eyebrow">¡Tu aventura continúa!</p>
+        <h1>¡Hola, {{ studentName() }}!</h1>
+        <span class="level-badge">⭐ Nivel {{ level }}</span>
+      </div>
+    </div>
+
+    <div class="score-card">
+      <span aria-hidden="true">🌟</span>
+      <strong>{{ stars }}</strong>
+      <span>estrellas</span>
+    </div>
+  </header>
+
+  <section class="streak-card">
+    <span class="streak-card__fire" aria-hidden="true">🔥</span>
+
+    <div class="streak-card__text">
+      <strong>¡Llevas {{ streak }} días aprendiendo!</strong>
+      <span>Un poquito cada día te lleva muy lejos.</span>
+    </div>
+
+    <span class="streak-card__sparkles" aria-hidden="true">✨</span>
+  </section>
+
+  <section class="adventure">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">TU CAMINO DE APRENDIZAJE</p>
+        <h2>¿A dónde vamos hoy?</h2>
+      </div>
+
+      <span class="map-icon" aria-hidden="true">🗺️</span>
+    </div>
+
+    <div class="xp-card">
+      <div class="xp-card__labels">
+        <strong>Tu progreso</strong>
+        <span>{{ xp }} / {{ xpForNextLevel }} XP</span>
+      </div>
+
+      <div
+        class="progress-track"
+        role="progressbar"
+        [attr.aria-valuenow]="xp"
+        [attr.aria-valuemin]="0"
+        [attr.aria-valuemax]="xpForNextLevel"
+        aria-label="Progreso de experiencia"
+      >
+        <div
+          class="progress-fill"
+          [style.width.%]="(xp / xpForNextLevel) * 100"
+        ></div>
+      </div>
+    </div>
+
+    <div class="topic-grid">
+      <button
+        *ngFor="let topic of topics"
+        class="topic-card"
+        [class.topic-card--green]="topic.color === 'green'"
+        [class.topic-card--blue]="topic.color === 'blue'"
+        [class.topic-card--orange]="topic.color === 'orange'"
+        [class.topic-card--purple]="topic.color === 'purple'"
+        [class.topic-card--pink]="topic.color === 'pink'"
+        type="button"
+        (click)="openTopic(topic)"
+      >
+        <span class="topic-card__icon" aria-hidden="true">
+          {{ topic.icon }}
+        </span>
+
+        <span class="topic-card__text">
+          <strong>{{ topic.title }}</strong>
+          <span>{{ topic.subtitle }}</span>
+        </span>
+
+        <span class="topic-card__progress">
+          <span
+            class="topic-card__progress-fill"
+            [style.width.%]="topic.progress"
+          ></span>
+        </span>
+
+        <span class="topic-card__percent">
+          {{ topic.progress }}% explorado
+        </span>
+
+        <span class="topic-card__arrow" aria-hidden="true">➜</span>
+      </button>
+    </div>
+  </section>
+
+  <aside class="daily-tip">
+    <span class="daily-tip__icon" aria-hidden="true">💡</span>
+
+    <div>
+      <strong>¡Consejo de explorador!</strong>
+      <p>Observa, pregunta y descubre algo nuevo cada día.</p>
+    </div>
+  </aside>
+
+  <nav class="bottom-nav" aria-label="Navegación principal">
+    <button
+      *ngFor="let item of navigation"
+      type="button"
+      class="bottom-nav__item"
+      [class.bottom-nav__item--active]="activeSection() === item.name"
+      [attr.aria-current]="activeSection() === item.name ? 'page' : null"
+      (click)="selectSection(item.name)"
+    >
+      <span aria-hidden="true">{{ item.icon }}</span>
+      <span>{{ item.name }}</span>
+    </button>
+  </nav>
+
+  <div
+    class="topic-dialog-backdrop"
+    *ngIf="selectedTopic() as topic"
+    (click)="closeTopic()"
+  >
+    <section
+      class="topic-dialog"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="topic.title"
+      (click)="$event.stopPropagation()"
+    >
+      <button
+        class="topic-dialog__close"
+        type="button"
+        aria-label="Cerrar"
+        (click)="closeTopic()"
+      >
+        ×
+      </button>
+
+      <span class="topic-dialog__icon" aria-hidden="true">
+        {{ topic.icon }}
+      </span>
+
+      <h2>{{ topic.title }}</h2>
+      <p>{{ topic.subtitle }}</p>
+      <strong>¡Has explorado el {{ topic.progress }}% de este mundo!</strong>
+
+      <button
+        class="topic-dialog__button"
+        type="button"
+        (click)="closeTopic()"
+      >
+        ¡A explorar! ➜
+      </button>
+    </section>
+  </div>
+</main>
