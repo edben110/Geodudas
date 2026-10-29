@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, signal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, input, signal } from '@angular/core';
+import type { Map } from 'maplibre-gl';
 
 type Topic = {
   title: string;
@@ -15,7 +16,11 @@ type Topic = {
   templateUrl: './dashboard-estudiante.html',
   styleUrl: './dashboard-estudiante.css',
 })
-export class DashboardEstudiante {
+export class DashboardEstudiante implements AfterViewInit, OnDestroy {
+  @ViewChild('worldMap') private readonly worldMapElement?: ElementRef<HTMLDivElement>;
+  private worldMap?: Map;
+  private destroyed = false;
+
   readonly studentName = input('Explorador');
   readonly avatar = input<string | null>(null);
 
@@ -72,6 +77,24 @@ export class DashboardEstudiante {
     { name: 'Logros', icon: '🏆' },
     { name: 'Perfil', icon: '⭐' },
   ];
+
+  async ngAfterViewInit(): Promise<void> {
+    if (!this.worldMapElement) {
+      return;
+    }
+
+    const { createWorldMap } = await import('../map/worldMap');
+    if (this.destroyed) {
+      return;
+    }
+
+    this.worldMap = createWorldMap(this.worldMapElement.nativeElement);
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed = true;
+    this.worldMap?.remove();
+  }
 
   selectSection(section: string): void {
     this.activeSection.set(section);

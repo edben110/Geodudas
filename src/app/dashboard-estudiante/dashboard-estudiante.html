@@ -65,6 +65,17 @@
       </div>
     </div>
 
+    <section class="world-map-card" aria-labelledby="world-map-title">
+      <div class="world-map-card__heading">
+        <div>
+          <strong id="world-map-title">Explora el mundo</strong>
+          <span>Arrastra el mapa y toca un país para conocerlo.</span>
+        </div>
+        <span aria-hidden="true">🌍</span>
+      </div>
+      <div #worldMap class="world-map" aria-label="Mapa interactivo del mundo"></div>
+    </section>
+
     <div class="topic-grid">
       <button
         *ngFor="let topic of topics"
