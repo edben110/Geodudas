@@ -189,6 +189,48 @@
   transition: width 400ms ease;
 }
 
+.world-map-card {
+  margin-bottom: 18px;
+  padding: 18px;
+  border: 2px solid white;
+  border-radius: 24px;
+  background: #ffffffdf;
+  box-shadow: 0 6px 14px #2378aa18;
+}
+
+.world-map-card__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.world-map-card__heading div {
+  display: grid;
+  gap: 3px;
+}
+
+.world-map-card__heading strong {
+  font-size: 1.15rem;
+}
+
+.world-map-card__heading span {
+  color: #62738d;
+  font-size: 0.9rem;
+}
+
+.world-map-card__heading > span {
+  font-size: 2rem;
+}
+
+.world-map {
+  min-height: 420px;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #b8e7f7;
+}
+
 .topic-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
