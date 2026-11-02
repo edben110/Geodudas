@@ -2,7 +2,7 @@
   <header class="student-header">
     <div class="student-info">
       <div class="student-avatar">
-        <img *ngIf="avatar(); else defaultAvatar" [src]="avatar()" alt="">
+        <img *ngIf="avatar(); else defaultAvatar" [src]="avatar()" alt="" />
 
         <ng-template #defaultAvatar>
           <span aria-hidden="true">🧭</span>
@@ -12,115 +12,226 @@
       <div>
         <p class="eyebrow">¡Tu aventura continúa!</p>
         <h1>¡Hola, {{ studentName() }}!</h1>
-        <span class="level-badge">⭐ Nivel {{ level }}</span>
+        <span class="level-badge">⭐ Nivel {{ level() }}</span>
       </div>
     </div>
 
     <div class="score-card">
       <span aria-hidden="true">🌟</span>
-      <strong>{{ stars }}</strong>
+      <strong>{{ stars() }}</strong>
       <span>estrellas</span>
     </div>
   </header>
 
-  <section class="streak-card">
-    <span class="streak-card__fire" aria-hidden="true">🔥</span>
+  <ng-container [ngSwitch]="activeSection()">
+    <ng-container *ngSwitchCase="'Inicio'">
+      <section class="streak-card">
+        <span class="streak-card__fire" aria-hidden="true">🔥</span>
 
-    <div class="streak-card__text">
-      <strong>¡Llevas {{ streak }} días aprendiendo!</strong>
-      <span>Un poquito cada día te lleva muy lejos.</span>
-    </div>
-
-    <span class="streak-card__sparkles" aria-hidden="true">✨</span>
-  </section>
-
-  <section class="adventure">
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">TU CAMINO DE APRENDIZAJE</p>
-        <h2>¿A dónde vamos hoy?</h2>
-      </div>
-
-      <span class="map-icon" aria-hidden="true">🗺️</span>
-    </div>
-
-    <div class="xp-card">
-      <div class="xp-card__labels">
-        <strong>Tu progreso</strong>
-        <span>{{ xp }} / {{ xpForNextLevel }} XP</span>
-      </div>
-
-      <div
-        class="progress-track"
-        role="progressbar"
-        [attr.aria-valuenow]="xp"
-        [attr.aria-valuemin]="0"
-        [attr.aria-valuemax]="xpForNextLevel"
-        aria-label="Progreso de experiencia"
-      >
-        <div
-          class="progress-fill"
-          [style.width.%]="(xp / xpForNextLevel) * 100"
-        ></div>
-      </div>
-    </div>
-
-    <section class="world-map-card" aria-labelledby="world-map-title">
-      <div class="world-map-card__heading">
-        <div>
-          <strong id="world-map-title">Explora el mundo</strong>
-          <span>Arrastra el mapa y toca un país para conocerlo.</span>
+        <div class="streak-card__text">
+          <strong>¡Llevas {{ streak() }} días aprendiendo!</strong>
+          <span>Un poquito cada día te lleva muy lejos.</span>
         </div>
-        <span aria-hidden="true">🌍</span>
-      </div>
-      <div #worldMap class="world-map" aria-label="Mapa interactivo del mundo"></div>
-    </section>
 
-    <div class="topic-grid">
-      <button
-        *ngFor="let topic of topics"
-        class="topic-card"
-        [class.topic-card--green]="topic.color === 'green'"
-        [class.topic-card--blue]="topic.color === 'blue'"
-        [class.topic-card--orange]="topic.color === 'orange'"
-        [class.topic-card--purple]="topic.color === 'purple'"
-        [class.topic-card--pink]="topic.color === 'pink'"
-        type="button"
-        (click)="openTopic(topic)"
-      >
-        <span class="topic-card__icon" aria-hidden="true">
-          {{ topic.icon }}
-        </span>
+        <span class="streak-card__sparkles" aria-hidden="true">✨</span>
+      </section>
 
-        <span class="topic-card__text">
-          <strong>{{ topic.title }}</strong>
-          <span>{{ topic.subtitle }}</span>
-        </span>
+      <section class="adventure">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">TU CAMINO DE APRENDIZAJE</p>
+            <h2>¿A dónde vamos hoy?</h2>
+          </div>
 
-        <span class="topic-card__progress">
-          <span
-            class="topic-card__progress-fill"
-            [style.width.%]="topic.progress"
-          ></span>
-        </span>
+          <span class="map-icon" aria-hidden="true">🗺️</span>
+        </div>
 
-        <span class="topic-card__percent">
-          {{ topic.progress }}% explorado
-        </span>
+        <div class="xp-card">
+          <div class="xp-card__labels">
+            <strong>Tu progreso</strong>
+            <span>{{ xp() }} / {{ xpForNextLevel }} XP</span>
+          </div>
 
-        <span class="topic-card__arrow" aria-hidden="true">➜</span>
-      </button>
-    </div>
-  </section>
+          <div
+            class="progress-track"
+            role="progressbar"
+            [attr.aria-valuenow]="xp()"
+            [attr.aria-valuemin]="0"
+            [attr.aria-valuemax]="xpForNextLevel"
+            aria-label="Progreso de experiencia"
+          >
+            <div
+              class="progress-fill"
+              [style.width.%]="(xp() / xpForNextLevel) * 100"
+            ></div>
+          </div>
+        </div>
 
-  <aside class="daily-tip">
-    <span class="daily-tip__icon" aria-hidden="true">💡</span>
+        <section class="world-map-card" aria-labelledby="world-map-title">
+          <div class="world-map-card__heading">
+            <div>
+              <strong id="world-map-title">Explora el mundo</strong>
+              <span>Arrastra el mapa y toca un país para conocerlo.</span>
+            </div>
+            <span aria-hidden="true">🌍</span>
+          </div>
 
-    <div>
-      <strong>¡Consejo de explorador!</strong>
-      <p>Observa, pregunta y descubre algo nuevo cada día.</p>
-    </div>
-  </aside>
+          <app-world-map
+            mode="explore"
+            ariaLabel="Mapa interactivo del mundo"
+          ></app-world-map>
+        </section>
+
+        <div class="topic-grid">
+          <button
+            *ngFor="let topic of topics()"
+            class="topic-card"
+            [class.topic-card--green]="topic.color === 'green'"
+            [class.topic-card--blue]="topic.color === 'blue'"
+            [class.topic-card--orange]="topic.color === 'orange'"
+            [class.topic-card--purple]="topic.color === 'purple'"
+            [class.topic-card--pink]="topic.color === 'pink'"
+            type="button"
+            (click)="openTopic(topic)"
+          >
+            <span class="topic-card__icon" aria-hidden="true">
+              {{ topic.icon }}
+            </span>
+
+            <span class="topic-card__text">
+              <strong>{{ topic.title }}</strong>
+              <span>{{ topic.subtitle }}</span>
+            </span>
+
+            <span class="topic-card__progress">
+              <span
+                class="topic-card__progress-fill"
+                [style.width.%]="topic.progress"
+              ></span>
+            </span>
+
+            <span class="topic-card__percent">
+              {{ topic.progress }}% explorado
+            </span>
+
+            <span class="topic-card__arrow" aria-hidden="true">➜</span>
+          </button>
+        </div>
+      </section>
+
+      <aside class="daily-tip">
+        <span class="daily-tip__icon" aria-hidden="true">💡</span>
+
+        <div>
+          <strong>¡Consejo de explorador!</strong>
+          <p>Observa, pregunta y descubre algo nuevo cada día.</p>
+        </div>
+      </aside>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'Misiones'">
+      <app-missions
+        (activityCompleted)="onActivityCompleted($event)"
+      ></app-missions>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'Logros'">
+      <section class="section-panel">
+        <header class="section-panel__heading">
+          <div>
+            <p class="eyebrow">TUS LOGROS</p>
+            <h2>Medallas de explorador</h2>
+            <p>Completa misiones para desbloquear nuevas medallas.</p>
+          </div>
+          <span aria-hidden="true">🏆</span>
+        </header>
+
+        <div class="achievement-grid">
+          <article
+            *ngFor="let achievement of achievements()"
+            class="achievement-card"
+            [class.achievement-card--locked]="!achievement.unlocked"
+          >
+            <span class="achievement-card__icon" aria-hidden="true">
+              {{ achievement.unlocked ? achievement.icon : '🔒' }}
+            </span>
+            <div>
+              <strong>{{ achievement.title }}</strong>
+              <p>{{ achievement.description }}</p>
+              <span class="achievement-card__state">
+                {{ achievement.unlocked ? 'Desbloqueado' : 'Bloqueado' }}
+              </span>
+            </div>
+          </article>
+        </div>
+      </section>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'Perfil'">
+      <section class="section-panel profile-panel">
+        <div class="profile-avatar">
+          <img *ngIf="avatar(); else profileDefaultAvatar" [src]="avatar()" alt="" />
+
+          <ng-template #profileDefaultAvatar>
+            <span aria-hidden="true">🧭</span>
+          </ng-template>
+        </div>
+
+        <div class="profile-info">
+          <p class="eyebrow">TU PERFIL DE EXPLORADOR</p>
+          <h2>{{ studentName() }}</h2>
+          <p>
+            Sigue explorando el mapa para subir de nivel y descubrir nuevos
+            lugares del mundo.
+          </p>
+
+          <div class="profile-stats">
+            <div class="profile-stat">
+              <span aria-hidden="true">⭐</span>
+              <strong>Nivel {{ level() }}</strong>
+              <span>Nivel actual</span>
+            </div>
+            <div class="profile-stat">
+              <span aria-hidden="true">🌟</span>
+              <strong>{{ stars() }}</strong>
+              <span>Estrellas</span>
+            </div>
+            <div class="profile-stat">
+              <span aria-hidden="true">✨</span>
+              <strong>{{ xp() }} / {{ xpForNextLevel }}</strong>
+              <span>Experiencia</span>
+            </div>
+            <div class="profile-stat">
+              <span aria-hidden="true">🔥</span>
+              <strong>{{ streak() }} días</strong>
+              <span>Racha</span>
+            </div>
+          </div>
+
+          <div class="xp-card">
+            <div class="xp-card__labels">
+              <strong>Progreso al siguiente nivel</strong>
+              <span>{{ xp() }} / {{ xpForNextLevel }} XP</span>
+            </div>
+
+            <div
+              class="progress-track"
+              role="progressbar"
+              [attr.aria-valuenow]="xp()"
+              [attr.aria-valuemin]="0"
+              [attr.aria-valuemax]="xpForNextLevel"
+              aria-label="Progreso al siguiente nivel"
+            >
+              <div
+                class="progress-fill"
+                [style.width.%]="(xp() / xpForNextLevel) * 100"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </ng-container>
+  </ng-container>
 
   <nav class="bottom-nav" aria-label="Navegación principal">
     <button
@@ -168,7 +279,7 @@
       <button
         class="topic-dialog__button"
         type="button"
-        (click)="closeTopic()"
+        (click)="exploreTopic(topic)"
       >
         ¡A explorar! ➜
       </button>
