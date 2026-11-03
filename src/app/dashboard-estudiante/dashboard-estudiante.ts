@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, input, signal } from '@angular/core';
-import type { Map } from 'maplibre-gl';
+import { Component, computed, input, signal } from '@angular/core';
+import { WorldMapComponent } from '../map/world-map.component';
+import {
+  MissionsComponent,
+  type ActivityReward,
+} from '../missions/missions';
 
 type Topic = {
   title: string;
@@ -10,30 +14,36 @@ type Topic = {
   color: string;
 };
 
+type Achievement = {
+  icon: string;
+  title: string;
+  description: string;
+  unlocked: boolean;
+};
+
 @Component({
   selector: 'app-dashboard-estudiante',
-  imports: [CommonModule],
+  imports: [CommonModule, WorldMapComponent, MissionsComponent],
   templateUrl: './dashboard-estudiante.html',
   styleUrl: './dashboard-estudiante.css',
 })
-export class DashboardEstudiante implements AfterViewInit, OnDestroy {
-  @ViewChild('worldMap') private readonly worldMapElement?: ElementRef<HTMLDivElement>;
-  private worldMap?: Map;
-  private destroyed = false;
-
+export class DashboardEstudiante {
   readonly studentName = input('Explorador');
   readonly avatar = input<string | null>(null);
 
   readonly activeSection = signal('Inicio');
   readonly selectedTopic = signal<Topic | null>(null);
 
-  readonly stars = 320;
-  readonly level = 3;
-  readonly streak = 5;
-  readonly xp = 350;
+  readonly stars = signal(320);
+  readonly level = signal(3);
+  readonly streak = signal(5);
+  readonly xp = signal(350);
   readonly xpForNextLevel = 500;
 
-  readonly topics: Topic[] = [
+  readonly correctAnswers = signal(0);
+  readonly colombiaCorrect = signal(0);
+
+  readonly topics = signal<Topic[]>([
     {
       title: 'Mi comunidad',
       subtitle: 'Las personas y lugares que me rodean',
@@ -69,7 +79,7 @@ export class DashboardEstudiante implements AfterViewInit, OnDestroy {
       progress: 50,
       color: 'pink',
     },
-  ];
+  ]);
 
   readonly navigation = [
     { name: 'Inicio', icon: '🏠' },
@@ -78,23 +88,32 @@ export class DashboardEstudiante implements AfterViewInit, OnDestroy {
     { name: 'Perfil', icon: '⭐' },
   ];
 
-  async ngAfterViewInit(): Promise<void> {
-    if (!this.worldMapElement) {
-      return;
-    }
-
-    const { createWorldMap } = await import('../map/worldMap');
-    if (this.destroyed) {
-      return;
-    }
-
-    this.worldMap = createWorldMap(this.worldMapElement.nativeElement);
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed = true;
-    this.worldMap?.remove();
-  }
+  readonly achievements = computed<Achievement[]>(() => [
+    {
+      icon: '🧭',
+      title: 'Primer paso',
+      description: 'Acierta tu primera actividad en el mapa.',
+      unlocked: this.correctAnswers() >= 1,
+    },
+    {
+      icon: '🌍',
+      title: 'Explorador del mundo',
+      description: 'Acierta 10 países de los distintos continentes.',
+      unlocked: this.correctAnswers() >= 10,
+    },
+    {
+      icon: '🇨🇴',
+      title: 'Colombia en el corazón',
+      description: 'Acierta 5 lugares de Colombia.',
+      unlocked: this.colombiaCorrect() >= 5,
+    },
+    {
+      icon: '⭐',
+      title: 'Coleccionista de estrellas',
+      description: 'Reúne 500 estrellas.',
+      unlocked: this.stars() >= 500,
+    },
+  ]);
 
   selectSection(section: string): void {
     this.activeSection.set(section);
@@ -106,5 +125,44 @@ export class DashboardEstudiante implements AfterViewInit, OnDestroy {
 
   closeTopic(): void {
     this.selectedTopic.set(null);
+  }
+
+  exploreTopic(topic: Topic): void {
+    this.selectedTopic.set(null);
+    this.activeSection.set('Misiones');
+  }
+
+  onActivityCompleted(reward: ActivityReward): void {
+    this.correctAnswers.update((count) => count + 1);
+    this.stars.update((stars) => stars + reward.stars);
+
+    if (reward.missionId === 'colombia') {
+      this.colombiaCorrect.update((count) => count + 1);
+    }
+
+    this.addExperience(reward.xp);
+    this.topics.update((topics) =>
+      topics.map((topic) =>
+        topic.title === reward.topic
+          ? {
+              ...topic,
+              progress: Math.min(100, topic.progress + reward.progressDelta),
+            }
+          : topic,
+      ),
+    );
+  }
+
+  private addExperience(amount: number): void {
+    let xp = this.xp() + amount;
+    let level = this.level();
+
+    while (xp >= this.xpForNextLevel) {
+      xp -= this.xpForNextLevel;
+      level += 1;
+    }
+
+    this.xp.set(xp);
+    this.level.set(level);
   }
 }
