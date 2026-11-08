@@ -1,0 +1,171 @@
+<section class="missions" *ngIf="phase() === 'hub'">
+  <header class="missions-hero">
+    <div>
+      <p class="eyebrow">MISIONES GEOGRÁFICAS</p>
+      <h2>Elige tu próxima aventura</h2>
+      <p>
+        Aprende tocando el mapa. Cada misión tiene 6 retos y te permite ganar
+        experiencia, estrellas y progreso para tus temas.
+      </p>
+    </div>
+    <span class="missions-hero__stamp" aria-hidden="true">🧭</span>
+  </header>
+
+  <div class="mission-grid">
+    <button
+      *ngFor="let mission of missions"
+      type="button"
+      class="mission-card"
+      [class.mission-card--green]="mission.color === 'green'"
+      [class.mission-card--blue]="mission.color === 'blue'"
+      [class.mission-card--orange]="mission.color === 'orange'"
+      (click)="startMission(mission)"
+    >
+      <span class="mission-card__icon" aria-hidden="true">{{ mission.icon }}</span>
+      <span class="mission-card__body">
+        <strong>{{ mission.title }}</strong>
+        <span>{{ mission.description }}</span>
+        <span class="mission-card__tag">{{ missionTag(mission) }}</span>
+      </span>
+      <span class="mission-card__arrow" aria-hidden="true">➜</span>
+    </button>
+  </div>
+
+  <aside class="missions-note">
+    <span aria-hidden="true">🗺️</span>
+    <p>
+      <strong>Todo se juega en el mapa:</strong> arrastra, acerca y toca el país
+      o el punto que creas correcto. Si te equivocas, el mapa te mostrará la
+      respuesta.
+    </p>
+  </aside>
+</section>
+
+<section class="activity" *ngIf="phase() === 'playing' && activeMission() as mission">
+  <header class="activity__topbar">
+    <button class="ghost-button" type="button" (click)="backToHub()">
+      ← Misiones
+    </button>
+
+    <div class="activity__progress">
+      <div class="activity__progress-label">
+        <span>Reto {{ currentIndex() + 1 }} de {{ totalQuestions() }}</span>
+        <strong>{{ missionProgress() }}%</strong>
+      </div>
+      <div
+        class="progress-track"
+        role="progressbar"
+        [attr.aria-valuenow]="missionProgress()"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-label="Progreso de la misión"
+      >
+        <span class="progress-fill" [style.width.%]="missionProgress()"></span>
+      </div>
+    </div>
+
+    <div class="activity__score">
+      <span aria-hidden="true">✅</span>
+      <strong>{{ correctCount() }}</strong>
+      <span>aciertos</span>
+    </div>
+  </header>
+
+  <div class="activity__layout">
+    <aside class="activity__panel">
+      <span class="activity__mission-icon" aria-hidden="true">{{ mission.icon }}</span>
+      <p class="eyebrow">{{ mission.title }}</p>
+
+      <ng-container *ngIf="currentQuestion() as question">
+        <h2>{{ question.prompt }}</h2>
+
+        <ng-container *ngIf="mission.id === 'banderas'">
+          <div class="flag-card" *ngIf="question.country as country">
+            <img
+              *ngIf="!flagFailed()"
+              [src]="flagUrl(country)"
+              [alt]="'Bandera de ' + country.name"
+              (error)="flagFailed.set(true)"
+            />
+            <span *ngIf="flagFailed()" class="flag-fallback" aria-hidden="true">
+              {{ flagEmoji(country) }}
+            </span>
+          </div>
+        </ng-container>
+
+        <p class="activity__hint">
+          <span aria-hidden="true">💡</span>
+          {{ question.hint }}
+        </p>
+      </ng-container>
+
+      <div
+        class="feedback"
+        *ngIf="answered()"
+        [class.feedback--correct]="lastAnswerCorrect()"
+        [class.feedback--wrong]="!lastAnswerCorrect()"
+        role="status"
+        aria-live="polite"
+      >
+        <strong>{{ lastAnswerCorrect() ? '¡Correcto!' : 'Casi...' }}</strong>
+        <p>{{ feedback() }}</p>
+        <button class="primary-button" type="button" (click)="nextQuestion()">
+          {{
+            currentIndex() + 1 < totalQuestions()
+              ? 'Siguiente reto ➜'
+              : 'Ver resultados 🏁'
+          }}
+        </button>
+      </div>
+    </aside>
+
+    <div class="activity__map">
+      <app-world-map
+        [mode]="mapMode()"
+        [continent]="mapContinent()"
+        [highlight]="mapHighlight()"
+        [highlightPlaceId]="mapHighlightPlaceId()"
+        [showPlaces]="mapShowPlaces()"
+        [showPlaceLabels]="false"
+        [ariaLabel]="mapAriaLabel()"
+        (countrySelected)="onCountrySelected($event)"
+        (placeSelected)="onPlaceSelected($event)"
+      ></app-world-map>
+    </div>
+  </div>
+</section>
+
+<section class="summary" *ngIf="phase() === 'summary' && activeMission() as mission">
+  <span class="summary__icon" aria-hidden="true">🏁</span>
+  <p class="eyebrow">MISIÓN COMPLETADA</p>
+  <h2>{{ mission.title }}</h2>
+  <p class="summary__message">{{ summaryMessage() }}</p>
+
+  <div class="summary__stats">
+    <div>
+      <strong>{{ correctCount() }}/{{ totalQuestions() }}</strong>
+      <span>aciertos</span>
+    </div>
+    <div>
+      <strong>+{{ earnedXp() }}</strong>
+      <span>XP</span>
+    </div>
+    <div>
+      <strong>+{{ earnedStars() }}</strong>
+      <span>estrellas</span>
+    </div>
+    <div>
+      <strong>+{{ earnedProgress() }}%</strong>
+      <span>progreso</span>
+    </div>
+  </div>
+
+  <div class="summary__actions">
+    <button class="primary-button" type="button" (click)="restartMission()">
+      Repetir misión
+    </button>
+    <button class="secondary-button" type="button" (click)="backToHub()">
+      Elegir otra misión
+    </button>
+  </div>
+</section>
