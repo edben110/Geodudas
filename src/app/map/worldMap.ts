@@ -76,15 +76,17 @@ const BASE_MAPS: Record<
   },
   activity: {
     tiles: [
-      'https://basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png',
+      'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
     ],
-    attribution: '© OpenStreetMap © CARTO',
+    attribution:
+      'Tiles © Esri — Esri, HERE, Garmin, © OpenStreetMap contributors',
   },
   colombia: {
     tiles: [
-      'https://basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png',
+      'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
     ],
-    attribution: '© OpenStreetMap © CARTO',
+    attribution:
+      'Tiles © Esri — Esri, HERE, Garmin, © OpenStreetMap contributors',
   },
 };
 const NO_COUNTRY_FILTER: FilterSpecification = [
