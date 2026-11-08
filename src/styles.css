@@ -148,3 +148,51 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ==========================================================================
+   Tema "cuaderno de explorador" (rediseño visual)
+   Se agrega encima del sistema base: los tokens usan nombres propios
+   (--paper, --ink, --border...). --radius-lg se redefine aquí (24px).
+   ========================================================================== */
+
+:root {
+  --paper: #fff6e3;
+  --paper-dark: #f6e7c8;
+  --card: #fffdf6;
+  --ink: #1f2a44;
+  --ink-soft: #55607a;
+
+  --tomato: #e8553d;
+  --tomato-soft: #ffd9d1;
+  --mustard: #f2b134;
+  --mustard-soft: #ffe9b5;
+  --orange: #ff8a3d;
+  --orange-soft: #ffe0c7;
+  --teal: #1f9e8f;
+  --teal-soft: #c8efe8;
+  --sky: #4da3e0;
+  --sky-soft: #cfe8fa;
+  --plum: #8a5bd1;
+  --plum-soft: #e5d8fa;
+
+  --border: 2.5px solid var(--ink);
+  --shadow: 4px 4px 0 var(--ink);
+  --shadow-sm: 3px 3px 0 var(--ink);
+
+  --radius: 18px;
+  --radius-lg: 24px;
+
+  --font-title: 'Baloo 2', 'Nunito', sans-serif;
+  --font-body: 'Nunito', Arial, sans-serif;
+}
+
+html,
+body {
+  min-width: 320px;
+  min-height: 100%;
+}
+
+body {
+  color: var(--ink);
+  background-color: var(--paper);
+}

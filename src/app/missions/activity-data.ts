@@ -52,7 +52,7 @@ export const MISSIONS: MissionDefinition[] = [
     title: 'Encuentra el país',
     description:
       'Toca en el mapa el país que te pedimos. Cada ronda te lleva a un continente diferente.',
-    icon: '🌍',
+    icon: 'globe-hemisphere-west-duotone',
     color: 'green',
     topic: 'El mundo',
     instructions: 'Lee el nombre del país y tócalo en el mapa.',
@@ -62,7 +62,7 @@ export const MISSIONS: MissionDefinition[] = [
     title: 'Descubre la bandera',
     description:
       'Observa la bandera y busca en el mapa el país al que pertenece.',
-    icon: '🚩',
+    icon: 'flag-banner-duotone',
     color: 'blue',
     topic: 'El mundo',
     instructions: 'Mira la bandera y toca el país correcto en el mapa.',
@@ -72,7 +72,7 @@ export const MISSIONS: MissionDefinition[] = [
     title: 'Colombia en el mapa',
     description:
       'Recorre Colombia y encuentra sus ciudades y departamentos más importantes.',
-    icon: '🇨🇴',
+    icon: 'mountains-duotone',
     color: 'orange',
     topic: 'Mi país',
     instructions: 'Toca el punto donde se encuentra el lugar que te pedimos.',

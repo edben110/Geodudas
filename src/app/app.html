@@ -1,12 +1,14 @@
 <main class="welcome">
-  <header class="brand">
-    <span class="brand__globe" aria-hidden="true">🌍</span>
-    <h1>GeoDudas</h1>
-    <p>Explora, aprende y comprende el mundo</p>
+  <header class="brand" [class.brand--compact]="hasStarted()">
+    <img class="brand__logo" src="/images/logo-geodudas.svg" alt="" />
+    <div class="brand__text">
+      <h1>GeoDudas</h1>
+      <p>Explora, aprende y comprende el mundo</p>
+    </div>
   </header>
 
   <section class="welcome-card" *ngIf="!hasStarted(); else studentDashboard">
-    <span class="welcome-card__sparkle" aria-hidden="true">✨</span>
+    <span class="welcome-card__sparkle" aria-hidden="true"><app-icon name="star-four-duotone"></app-icon></span>
 
     <h2>¡Hola, explorador!</h2>
     <p class="welcome-card__intro">Escribe tu nombre y elige tu avatar</p>
@@ -31,7 +33,7 @@
           (profileForm.controls.name.touched || attemptedStart())
         "
       >
-        Escribe al menos 2 letras para continuar.
+        Escribe tu nombre con al menos 2 letras (sin números ni símbolos).
       </p>
 
       <h3>Elige tu avatar</h3>
@@ -54,7 +56,7 @@
             *ngIf="selectedAvatar() === avatar"
             aria-hidden="true"
           >
-            ✓
+            <app-icon name="check-bold"></app-icon>
           </span>
         </button>
       </div>
@@ -64,21 +66,22 @@
       </p>
 
       <button class="start-button" type="submit">
-        <span aria-hidden="true">🧭</span>
+        <app-icon name="compass-duotone"></app-icon>
         ¡Empezar a explorar!
-        <span aria-hidden="true">➜</span>
+        <app-icon name="arrow-right-bold"></app-icon>
       </button>
     </form>
 
     <p class="welcome-card__footnote">
-      🌟 Descubre lugares, historias y culturas increíbles 🌟
+      Descubre lugares, historias y culturas increíbles
     </p>
   </section>
 
   <ng-template #studentDashboard>
     <app-dashboard-estudiante
-      [studentName]="profileForm.controls.name.value"
+      [studentName]="studentName()"
       [avatar]="selectedAvatar()"
+      (loggedOut)="logout()"
     ></app-dashboard-estudiante>
   </ng-template>
 </main>

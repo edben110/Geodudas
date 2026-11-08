@@ -8,7 +8,7 @@
         experiencia, estrellas y progreso para tus temas.
       </p>
     </div>
-    <span class="missions-hero__stamp" aria-hidden="true">🧭</span>
+    <span class="missions-hero__stamp" aria-hidden="true"><app-icon name="compass-duotone"></app-icon></span>
   </header>
 
   <div class="mission-grid">
@@ -21,18 +21,18 @@
       [class.mission-card--orange]="mission.color === 'orange'"
       (click)="startMission(mission)"
     >
-      <span class="mission-card__icon" aria-hidden="true">{{ mission.icon }}</span>
+      <span class="mission-card__icon" aria-hidden="true"><app-icon [name]="mission.icon"></app-icon></span>
       <span class="mission-card__body">
         <strong>{{ mission.title }}</strong>
         <span>{{ mission.description }}</span>
         <span class="mission-card__tag">{{ missionTag(mission) }}</span>
       </span>
-      <span class="mission-card__arrow" aria-hidden="true">➜</span>
+      <span class="mission-card__arrow" aria-hidden="true"><app-icon name="arrow-right-bold"></app-icon></span>
     </button>
   </div>
 
   <aside class="missions-note">
-    <span aria-hidden="true">🗺️</span>
+    <span aria-hidden="true"><app-icon name="map-trifold-duotone"></app-icon></span>
     <p>
       <strong>Todo se juega en el mapa:</strong> arrastra, acerca y toca el país
       o el punto que creas correcto. Si te equivocas, el mapa te mostrará la
@@ -44,7 +44,7 @@
 <section class="activity" *ngIf="phase() === 'playing' && activeMission() as mission">
   <header class="activity__topbar">
     <button class="ghost-button" type="button" (click)="backToHub()">
-      ← Misiones
+      <app-icon name="arrow-left-bold"></app-icon> Misiones
     </button>
 
     <div class="activity__progress">
@@ -65,7 +65,7 @@
     </div>
 
     <div class="activity__score">
-      <span aria-hidden="true">✅</span>
+      <app-icon name="check-circle-duotone"></app-icon>
       <strong>{{ correctCount() }}</strong>
       <span>aciertos</span>
     </div>
@@ -73,7 +73,7 @@
 
   <div class="activity__layout">
     <aside class="activity__panel">
-      <span class="activity__mission-icon" aria-hidden="true">{{ mission.icon }}</span>
+      <span class="activity__mission-icon" aria-hidden="true"><app-icon [name]="mission.icon"></app-icon></span>
       <p class="eyebrow">{{ mission.title }}</p>
 
       <ng-container *ngIf="currentQuestion() as question">
@@ -94,7 +94,7 @@
         </ng-container>
 
         <p class="activity__hint">
-          <span aria-hidden="true">💡</span>
+          <app-icon name="lightbulb-duotone"></app-icon>
           {{ question.hint }}
         </p>
       </ng-container>
@@ -112,8 +112,8 @@
         <button class="primary-button" type="button" (click)="nextQuestion()">
           {{
             currentIndex() + 1 < totalQuestions()
-              ? 'Siguiente reto ➜'
-              : 'Ver resultados 🏁'
+              ? 'Siguiente reto'
+              : 'Ver resultados'
           }}
         </button>
       </div>
@@ -136,7 +136,7 @@
 </section>
 
 <section class="summary" *ngIf="phase() === 'summary' && activeMission() as mission">
-  <span class="summary__icon" aria-hidden="true">🏁</span>
+  <span class="summary__icon" aria-hidden="true"><app-icon name="flag-checkered-duotone"></app-icon></span>
   <p class="eyebrow">MISIÓN COMPLETADA</p>
   <h2>{{ mission.title }}</h2>
   <p class="summary__message">{{ summaryMessage() }}</p>

@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, output, signal } from '@angular/core';
+import { IconComponent } from '../shared/icon';
 import { WorldMapComponent } from '../map/world-map.component';
 import type { CountryProperties, MapMode } from '../map/worldMap';
 import { countryMatchesTarget } from '../map/worldMap';
@@ -33,7 +34,7 @@ const QUESTIONS_PER_MISSION = 6;
 
 @Component({
   selector: 'app-missions',
-  imports: [CommonModule, WorldMapComponent],
+  imports: [CommonModule, IconComponent, WorldMapComponent],
   templateUrl: './missions.html',
   styleUrl: './missions.css',
 })
