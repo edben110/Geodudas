@@ -155,8 +155,10 @@
     </li>
   </ul>
 
-  <!-- Mensaje de celebración cuando todo está listo -->
-  <div class="taskflow__complete" *ngIf="allDone()">
+  <!-- Mensaje de celebración: [hidden] lo mantiene en el DOM pero
+       lo oculta con display:none mientras no estén todas completadas.
+       Diferencia clave con *ngIf: el elemento ya existe, no se destruye. -->
+  <div class="taskflow__complete" [hidden]="!allDone()">
     <app-icon name="check-circle-duotone"></app-icon>
     <strong>¡Increíble! Completaste todos tus retos de hoy.</strong>
 
@@ -172,7 +174,13 @@
 </section>
 
 <!-- ══ Acceso rápido a secciones ═════════════════════════════ -->
-<section class="quick-access" aria-labelledby="quick-access-heading">
+<!-- [hidden] oculta esta sección hasta que el estudiante haya
+     completado al menos una tarea: incentiva explorar el taskflow. -->
+<section
+  class="quick-access"
+  aria-labelledby="quick-access-heading"
+  [hidden]="completedCount() === 0"
+>
   <p class="eyebrow" id="quick-access-heading">EXPLORA GEODUDAS</p>
 
   <div class="quick-grid">
