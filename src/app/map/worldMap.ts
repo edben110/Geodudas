@@ -1,5 +1,11 @@
 import * as maplibregl from 'maplibre-gl';
-import type { FilterSpecification, Map, MapLayerMouseEvent } from 'maplibre-gl';
+import type {
+  FillLayerSpecification,
+  FilterSpecification,
+  Map,
+  MapLayerMouseEvent,
+  StyleSpecification,
+} from 'maplibre-gl';
 import type { FeatureCollection, Point } from 'geojson';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { COLOMBIA_PLACES, type ColombiaPlace } from './colombia-places';
@@ -62,6 +68,20 @@ const CONTINENT_VIEWS: Record<
 };
 
 const COLOMBIA_VIEW = { center: [-73.5, 4] as [number, number], zoom: 4.2 };
+
+// En las misiones el mapa se dibuja solo con las fronteras políticas de los
+// países, sin ninguna tesela ni rótulo externo: así nunca aparecen nombres de
+// países, ciudades, capitales, departamentos ni provincias que delaten la
+// respuesta. El mapa de exploración conserva OpenStreetMap con sus nombres.
+const EXPLORE_BASE_MAP = {
+  tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+  attribution: '© OpenStreetMap',
+};
+
+const ACTIVITY_OCEAN_COLOR = '#CFE3F2';
+const ACTIVITY_LAND_COLOR = '#F6F3EA';
+const ACTIVITY_LAND_HOVER_COLOR = '#D8EFE8';
+const ACTIVITY_BORDER_COLOR = '#6B7688';
 const NO_COUNTRY_FILTER: FilterSpecification = [
   '==',
   ['get', 'ISO_A3'],
@@ -116,20 +136,34 @@ export function createWorldMap(
   options: WorldMapOptions = {},
 ): Map {
   const mode = options.mode ?? 'explore';
+  const isActivityMap = mode !== 'explore';
+  const baseStyle: StyleSpecification = isActivityMap
+    ? {
+        version: 8,
+        sources: {},
+        layers: [
+          {
+            id: 'fondo',
+            type: 'background',
+            paint: { 'background-color': ACTIVITY_OCEAN_COLOR },
+          },
+        ],
+      }
+    : {
+        version: 8,
+        sources: {
+          osm: {
+            type: 'raster',
+            tiles: EXPLORE_BASE_MAP.tiles,
+            tileSize: 256,
+            attribution: EXPLORE_BASE_MAP.attribution,
+          },
+        },
+        layers: [{ id: 'osm', type: 'raster', source: 'osm' }],
+      };
   const map = new maplibregl.Map({
     container,
-    style: {
-      version: 8,
-      sources: {
-        osm: {
-          type: 'raster',
-          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-          tileSize: 256,
-          attribution: '© OpenStreetMap',
-        },
-      },
-      layers: [{ id: 'osm', type: 'raster', source: 'osm' }],
-    },
+    style: baseStyle,
     center: options.center ?? [-77, 1.2],
     zoom: options.zoom ?? 2,
   });
@@ -146,26 +180,41 @@ export function createWorldMap(
       generateId: true,
     });
 
+    const countryFillPaint: FillLayerSpecification['paint'] = isActivityMap
+      ? {
+          'fill-color': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            ACTIVITY_LAND_HOVER_COLOR,
+            ACTIVITY_LAND_COLOR,
+          ],
+          'fill-opacity': 1,
+        }
+      : {
+          'fill-color': '#1F9E8F',
+          'fill-opacity': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            0.6,
+            0.15,
+          ],
+        };
+
     map.addLayer({
       id: 'paises-fill',
       type: 'fill',
       source: 'paises',
-      paint: {
-        'fill-color': '#1F9E8F',
-        'fill-opacity': [
-          'case',
-          ['boolean', ['feature-state', 'hover'], false],
-          0.6,
-          0.15,
-        ],
-      },
+      paint: countryFillPaint,
     });
 
     map.addLayer({
       id: 'paises-line',
       type: 'line',
       source: 'paises',
-      paint: { 'line-color': '#1F2A44', 'line-width': 1 },
+      paint: {
+        'line-color': isActivityMap ? ACTIVITY_BORDER_COLOR : '#1F2A44',
+        'line-width': isActivityMap ? 1.2 : 1,
+      },
     });
 
     map.addLayer({
