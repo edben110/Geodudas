@@ -339,7 +339,11 @@ function openCountryInfo(
     '—';
   const population = properties.POP_EST;
 
-  new maplibregl.Popup()
+  // Margen superior para que el cuadro de información quepa dentro del mapa.
+  const popupRoom = { top: 200, right: 0, bottom: 0, left: 0 };
+  const noPadding = { top: 0, right: 0, bottom: 0, left: 0 };
+
+  const popup = new maplibregl.Popup({ maxWidth: '260px', className: 'country-popup' })
     .setLngLat(event.lngLat)
     .setHTML(`
       ${iso2 ? `<img src="https://flagcdn.com/w80/${iso2.toLowerCase()}.png" width="80" alt="" />` : ''}
@@ -350,7 +354,14 @@ function openCountryInfo(
     `)
     .addTo(map);
 
-  map.flyTo({ center: event.lngLat, zoom: 4, duration: 2000 });
+  popup.on('close', () => map.easeTo({ padding: noPadding, duration: 300 }));
+
+  map.flyTo({
+    center: event.lngLat,
+    zoom: 4,
+    duration: 2000,
+    padding: popupRoom,
+  });
 }
 
 export function setContinentFilter(map: Map, continent: string | null): void {
