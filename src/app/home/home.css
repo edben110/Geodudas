@@ -1,0 +1,567 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* ══ Bienvenida personalizada ══════════════════════════════════ */
+.home-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding: 22px 28px;
+  border: var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.home-hero__text h2 {
+  margin: 4px 0 6px;
+  font-family: var(--font-title);
+  font-size: clamp(1.5rem, 4vw, 2.3rem);
+  line-height: 1.1;
+}
+
+.home-hero__sub {
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+
+.home-hero__avatar {
+  display: grid;
+  width: 90px;
+  height: 90px;
+  flex: 0 0 auto;
+  place-items: center;
+  overflow: hidden;
+  border: var(--border);
+  border-radius: 50%;
+  background: var(--mustard-soft);
+  box-shadow: var(--shadow-sm);
+  font-size: 2.6rem;
+  transition: box-shadow 300ms ease;
+}
+
+/* Cuando todas las tareas están hechas, el avatar brilla */
+.home-hero__avatar--glow {
+  background: var(--teal-soft);
+  box-shadow: 0 0 0 4px var(--teal), var(--shadow-sm);
+}
+
+.home-hero__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ══ Chips de estadísticas ══════════════════════════════════════ */
+.stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.stat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: var(--border);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-chip strong {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+}
+
+.stat-chip span {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+/* Variantes de color para cada chip */
+.stat-chip--stars {
+  background: var(--mustard-soft);
+}
+
+.stat-chip--stars app-icon {
+  color: var(--mustard);
+  font-size: 1.5rem;
+}
+
+.stat-chip--level {
+  background: var(--plum-soft);
+}
+
+.stat-chip--level app-icon {
+  color: var(--plum);
+  font-size: 1.5rem;
+}
+
+.stat-chip--streak {
+  background: var(--tomato-soft);
+}
+
+.stat-chip--streak app-icon {
+  color: var(--tomato);
+  font-size: 1.5rem;
+}
+
+/* ══ Barra XP ═══════════════════════════════════════════════════ */
+.xp-bar-card {
+  margin-bottom: 22px;
+  padding: 16px 20px;
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+}
+
+.xp-bar-card__labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 9px;
+  font-weight: 900;
+}
+
+.xp-bar-card__labels span {
+  color: var(--ink-soft);
+}
+
+.xp-bar-track {
+  height: 18px;
+  overflow: hidden;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: white;
+}
+
+.xp-bar-fill {
+  height: 100%;
+  border-right: 2px solid var(--ink);
+  border-radius: inherit;
+  background: var(--teal);
+  transition: width 400ms ease;
+}
+
+/* ══ Taskflow ═══════════════════════════════════════════════════ */
+.taskflow {
+  margin-bottom: 24px;
+  padding: 22px 24px;
+  border: var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.taskflow__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.taskflow__header h3 {
+  margin: 4px 0 0;
+  font-family: var(--font-title);
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+}
+
+/* Badge de progreso de tareas */
+.taskflow__progress-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  padding: 8px 14px;
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--sky-soft);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  transition: background 300ms ease;
+}
+
+/* Cuando todo está listo el badge cambia a verde */
+.taskflow__progress-badge--done {
+  background: var(--teal-soft);
+  box-shadow: 3px 3px 0 var(--teal);
+}
+
+.taskflow__progress-num {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.taskflow__progress-label {
+  color: var(--ink-soft);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+/* Barra de progreso de tareas */
+.taskflow__bar-track {
+  height: 14px;
+  overflow: hidden;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: white;
+  margin-bottom: 16px;
+}
+
+.taskflow__bar-fill {
+  height: 100%;
+  border-right: 2px solid var(--ink);
+  border-radius: inherit;
+  background: var(--sky);
+  transition: width 350ms ease;
+}
+
+/* Cuando todo está completado: barra verde */
+.taskflow__bar-fill--done {
+  background: var(--teal);
+}
+
+/* ── Lista de tareas ──────────────────────────────────────────── */
+.task-list {
+  display: grid;
+  gap: 10px;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  background: white;
+  box-shadow: var(--shadow-sm);
+  transition:
+    background 200ms ease,
+    opacity 200ms ease,
+    border-color 200ms ease;
+}
+
+/* Modificador: tarea completada */
+.task-item--done {
+  background: var(--teal-soft);
+  border-color: var(--teal);
+  box-shadow: none;
+  opacity: 0.8;
+}
+
+/* Checkbox oculto visualmente pero accesible */
+.task-item__check-wrap {
+  display: flex;
+  flex: 0 0 auto;
+  cursor: pointer;
+}
+
+.task-item__checkbox {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Caja visual del checkbox */
+.task-item__check-box {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  background: white;
+  font-size: 1.1rem;
+  color: var(--ink-soft);
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+/* Modificador: checkbox marcado */
+.task-item__check-box--checked {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: white;
+}
+
+/* Ícono de la tarea */
+.task-item__icon {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: var(--mustard-soft);
+  font-size: 1.35rem;
+  color: var(--ink);
+  transition: background 200ms ease, opacity 200ms ease;
+}
+
+/* Modificador: ícono de tarea hecha */
+.task-item__icon--done {
+  background: var(--teal);
+  opacity: 0.7;
+}
+
+/* Etiqueta de la tarea */
+.task-item__label {
+  flex: 1;
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  transition: text-decoration 150ms ease, color 200ms ease;
+}
+
+/* Modificador: etiqueta de tarea hecha — texto tachado */
+.task-item__label--done {
+  color: var(--ink-soft);
+  text-decoration: line-through;
+}
+
+/* Botón "Ir" de cada tarea */
+.task-item__goto {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  color: var(--ink);
+  background: var(--mustard);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.task-item__goto:hover {
+  background: var(--orange);
+  transform: translate(-1px, -2px);
+  box-shadow: 2px 3px 0 var(--ink);
+}
+
+.task-item__goto:active {
+  transform: translate(1px, 1px);
+  box-shadow: none;
+}
+
+/* Modificador: botón "Ir" cuando ya está completada */
+.task-item__goto--done {
+  background: var(--teal-soft);
+}
+
+/* ── Mensaje de celebración ───────────────────────────────────── */
+.taskflow__complete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 18px;
+  border: 2.5px dashed var(--teal);
+  border-radius: var(--radius);
+  background: var(--teal-soft);
+  text-align: center;
+  animation: pop-in 200ms ease-out;
+}
+
+.taskflow__complete app-icon {
+  font-size: 2.4rem;
+  color: var(--teal);
+}
+
+.taskflow__complete strong {
+  font-family: var(--font-title);
+  font-size: 1.2rem;
+}
+
+.taskflow__reset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  color: var(--ink);
+  background: white;
+  font: inherit;
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.taskflow__reset-btn:hover {
+  background: var(--paper-dark);
+  transform: translate(-1px, -2px);
+}
+
+/* ══ Acceso rápido ════════════════════════════════════════════════ */
+.quick-access {
+  margin-bottom: 8px;
+}
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.quick-card {
+  --qc-accent: var(--sky);
+  --qc-soft: var(--sky-soft);
+
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding: 18px 16px 14px;
+  border: var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--qc-soft);
+  box-shadow: var(--shadow-sm);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.quick-card:hover {
+  transform: translate(-2px, -3px);
+  box-shadow: 5px 6px 0 var(--ink);
+}
+
+.quick-card:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+.quick-card--missions {
+  --qc-accent: var(--mustard);
+  --qc-soft: var(--mustard-soft);
+}
+
+.quick-card--achievements {
+  --qc-accent: var(--plum);
+  --qc-soft: var(--plum-soft);
+}
+
+.quick-card--profile {
+  --qc-accent: var(--sky);
+  --qc-soft: var(--sky-soft);
+}
+
+.quick-card__icon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border: var(--border);
+  border-radius: 14px;
+  background: var(--qc-accent);
+  font-size: 1.9rem;
+  margin-bottom: 8px;
+  transform: rotate(-3deg);
+}
+
+.quick-card strong {
+  font-family: var(--font-title);
+  font-size: 1.15rem;
+  line-height: 1.1;
+}
+
+.quick-card span {
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  line-height: 1.3;
+}
+
+.quick-card__arrow {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 1rem;
+}
+
+/* ══ Clases utilitarias reutilizables ═══════════════════════════ */
+.eyebrow {
+  margin: 0 0 4px;
+  color: var(--tomato);
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ══ Animaciones ═════════════════════════════════════════════════ */
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ══ Responsive ══════════════════════════════════════════════════ */
+@media (max-width: 700px) {
+  .home-hero {
+    padding: 16px;
+  }
+
+  .stats-row {
+    gap: 8px;
+  }
+
+  .stat-chip {
+    padding: 8px 12px;
+    flex: 1 1 auto;
+  }
+
+  .quick-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .taskflow {
+    padding: 16px;
+  }
+
+  .task-item {
+    gap: 8px;
+    padding: 10px 10px;
+  }
+}
+
+@media (max-width: 380px) {
+  .home-hero__avatar {
+    width: 68px;
+    height: 68px;
+    font-size: 2rem;
+  }
+
+  .task-item__label {
+    font-size: 0.88rem;
+  }
+}
