@@ -151,7 +151,7 @@ export function createWorldMap(
       type: 'fill',
       source: 'paises',
       paint: {
-        'fill-color': '#4CAF50',
+        'fill-color': '#1F9E8F',
         'fill-opacity': [
           'case',
           ['boolean', ['feature-state', 'hover'], false],
@@ -165,7 +165,7 @@ export function createWorldMap(
       id: 'paises-line',
       type: 'line',
       source: 'paises',
-      paint: { 'line-color': '#1B5E20', 'line-width': 1 },
+      paint: { 'line-color': '#1F2A44', 'line-width': 1 },
     });
 
     map.addLayer({
@@ -173,7 +173,7 @@ export function createWorldMap(
       type: 'fill',
       source: 'paises',
       filter: NO_COUNTRY_FILTER,
-      paint: { 'fill-color': '#FFC107', 'fill-opacity': 0.62 },
+      paint: { 'fill-color': '#F2B134', 'fill-opacity': 0.62 },
     });
 
     map.addLayer({
@@ -181,7 +181,7 @@ export function createWorldMap(
       type: 'line',
       source: 'paises',
       filter: NO_COUNTRY_FILTER,
-      paint: { 'line-color': '#FF6F00', 'line-width': 3 },
+      paint: { 'line-color': '#E8553D', 'line-width': 3 },
     });
 
     map.addSource('colombia-lugares', {
@@ -199,7 +199,7 @@ export function createWorldMap(
         'circle-radius': 13,
         'circle-color': '#FFFFFF',
         'circle-opacity': 0.85,
-        'circle-stroke-color': '#1769D2',
+        'circle-stroke-color': '#E8553D',
         'circle-stroke-width': 2,
       },
     });
@@ -211,7 +211,7 @@ export function createWorldMap(
       layout: { visibility: 'none' },
       paint: {
         'circle-radius': 6,
-        'circle-color': '#1769D2',
+        'circle-color': '#E8553D',
         'circle-stroke-color': '#FFFFFF',
         'circle-stroke-width': 2,
       },
@@ -224,9 +224,9 @@ export function createWorldMap(
       filter: NO_PLACE_FILTER,
       paint: {
         'circle-radius': 16,
-        'circle-color': '#FFC107',
+        'circle-color': '#F2B134',
         'circle-opacity': 0.92,
-        'circle-stroke-color': '#17376D',
+        'circle-stroke-color': '#1F2A44',
         'circle-stroke-width': 3,
       },
     });
@@ -244,7 +244,7 @@ export function createWorldMap(
         'text-allow-overlap': true,
       },
       paint: {
-        'text-color': '#17376D',
+        'text-color': '#1F2A44',
         'text-halo-color': '#FFFFFF',
         'text-halo-width': 2,
       },
@@ -339,7 +339,11 @@ function openCountryInfo(
     '—';
   const population = properties.POP_EST;
 
-  new maplibregl.Popup()
+  // Margen superior para que el cuadro de información quepa dentro del mapa.
+  const popupRoom = { top: 200, right: 0, bottom: 0, left: 0 };
+  const noPadding = { top: 0, right: 0, bottom: 0, left: 0 };
+
+  const popup = new maplibregl.Popup({ maxWidth: '260px', className: 'country-popup' })
     .setLngLat(event.lngLat)
     .setHTML(`
       ${iso2 ? `<img src="https://flagcdn.com/w80/${iso2.toLowerCase()}.png" width="80" alt="" />` : ''}
@@ -350,7 +354,14 @@ function openCountryInfo(
     `)
     .addTo(map);
 
-  map.flyTo({ center: event.lngLat, zoom: 4, duration: 2000 });
+  popup.on('close', () => map.easeTo({ padding: noPadding, duration: 300 }));
+
+  map.flyTo({
+    center: event.lngLat,
+    zoom: 4,
+    duration: 2000,
+    padding: popupRoom,
+  });
 }
 
 export function setContinentFilter(map: Map, continent: string | null): void {

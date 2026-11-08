@@ -50,7 +50,7 @@ import type { CountryTarget } from '../missions/activity-data';
         min-height: 420px;
         overflow: hidden;
         border-radius: 18px;
-        background: #b8e7f7;
+        background: #cfe8fa;
       }
     `,
   ],
