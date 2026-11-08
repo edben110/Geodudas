@@ -14,11 +14,10 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render the app title and welcome form', async () => {
+  it('should render title', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('GeoDudas');
-    expect(compiled.querySelector('#student-name')).toBeTruthy();
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, geodudas');
   });
 });
