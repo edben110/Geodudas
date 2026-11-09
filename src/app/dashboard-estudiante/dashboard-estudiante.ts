@@ -17,11 +17,11 @@ import {
   nextStreak,
   type Profile,
 } from '../shared/progress-store';
-import { WorldMapComponent } from '../map/world-map.component';
 import {
   MissionsComponent,
   type ActivityReward,
 } from '../missions/missions';
+import { HomeComponent, type HomeStats } from '../home/home';
 
 type Topic = {
   title: string;
@@ -40,7 +40,7 @@ type Achievement = {
 
 @Component({
   selector: 'app-dashboard-estudiante',
-  imports: [CommonModule, IconComponent, WorldMapComponent, MissionsComponent],
+  imports: [CommonModule, IconComponent, MissionsComponent, HomeComponent],
   templateUrl: './dashboard-estudiante.html',
   styleUrl: './dashboard-estudiante.css',
 })
@@ -113,6 +113,15 @@ export class DashboardEstudiante implements OnInit {
     { name: 'Logros', icon: 'trophy-bold' },
     { name: 'Perfil', icon: 'user-circle-bold' },
   ];
+
+  /** Agrupa las stats que necesita HomeComponent. */
+  readonly homeStats = computed<HomeStats>(() => ({
+    stars: this.stars(),
+    level: this.level(),
+    streak: this.streak(),
+    xp: this.xp(),
+    xpForNextLevel: this.xpForNextLevel,
+  }));
 
   readonly achievements = computed<Achievement[]>(() => [
     {

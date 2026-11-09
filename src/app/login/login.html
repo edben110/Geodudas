@@ -1,0 +1,89 @@
+<section class="login-card">
+  <span class="login-card__sparkle" aria-hidden="true">
+    <app-icon name="star-four-duotone"></app-icon>
+  </span>
+
+  <h2>¡Hola, explorador!</h2>
+  <p class="login-card__intro">Escribe tu nombre y elige tu avatar para comenzar</p>
+
+  <form [formGroup]="profileForm" (ngSubmit)="startExploring()" novalidate>
+
+    <!-- ── Nombre ─────────────────────────────────────── -->
+    <label class="login__label" for="student-name">Tu nombre</label>
+
+    <input
+      id="student-name"
+      class="login__input"
+      [class.login__input--error]="nameHasError"
+      type="text"
+      formControlName="name"
+      placeholder="Escribe tu nombre"
+      maxlength="25"
+      autocomplete="given-name"
+      [attr.aria-invalid]="nameHasError || null"
+      aria-describedby="name-error"
+    />
+
+    <p
+      id="name-error"
+      class="login__message"
+      role="alert"
+      *ngIf="nameHasError"
+    >
+      <app-icon name="x-bold"></app-icon>
+      Escribe tu nombre con al menos 2 letras (sin números ni símbolos).
+    </p>
+
+    <!-- ── Avatar ─────────────────────────────────────── -->
+    <h3 class="login__avatar-title">Elige tu avatar</h3>
+    <p class="login__avatar-hint">Toca la imagen que más te guste</p>
+
+    <div class="login__avatars" role="group" aria-label="Selecciona un avatar">
+      <button
+        *ngFor="let avatar of avatars; let i = index"
+        type="button"
+        class="avatar-btn"
+        [class.avatar-btn--selected]="selectedAvatar() === avatar"
+        [attr.aria-label]="'Seleccionar avatar ' + (i + 1)"
+        [attr.aria-pressed]="selectedAvatar() === avatar"
+        (click)="selectAvatar(avatar)"
+      >
+        <img class="avatar-btn__img" [src]="avatar" [alt]="'Avatar ' + (i + 1)" />
+
+        <span
+          class="avatar-btn__check"
+          *ngIf="selectedAvatar() === avatar"
+          aria-hidden="true"
+        >
+          <app-icon name="check-bold"></app-icon>
+        </span>
+      </button>
+    </div>
+
+    <p
+      class="login__message"
+      role="alert"
+      *ngIf="attemptedStart() && !selectedAvatar()"
+    >
+      <app-icon name="x-bold"></app-icon>
+      Elige un avatar para comenzar.
+    </p>
+
+    <!-- ── Botón submit ───────────────────────────────── -->
+    <button
+      class="login__submit"
+      type="submit"
+      [class.login__submit--loading]="submitting()"
+      [disabled]="submitting()"
+    >
+      <app-icon name="compass-duotone"></app-icon>
+      ¡Empezar a explorar!
+      <app-icon name="arrow-right-bold"></app-icon>
+    </button>
+  </form>
+
+  <p class="login-card__footnote">
+    <app-icon name="lock-key-duotone"></app-icon>
+    Tus datos se guardan solo en este dispositivo.
+  </p>
+</section>
