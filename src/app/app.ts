@@ -1,58 +1,45 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { ProgressStore, type Session } from './shared/progress-store';
 import { DashboardEstudiante } from './dashboard-estudiante/dashboard-estudiante';
+import { LoginComponent } from './login/login';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, ReactiveFormsModule, DashboardEstudiante],
+  imports: [CommonModule, DashboardEstudiante, LoginComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
 export class App {
-  readonly avatars = [
-    '/images/Avatar1.png',
-    '/images/Avatar2.png',
-    '/images/Avatar3.png',
-  ];
+  private readonly store = inject(ProgressStore);
 
-  readonly selectedAvatar = signal<string | null>(null);
   readonly hasStarted = signal(false);
-  readonly attemptedStart = signal(false);
+  readonly studentName = signal('');
+  readonly selectedAvatar = signal<string | null>(null);
 
-  readonly profileForm = new FormGroup({
-    name: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.minLength(2)],
-    }),
-  });
+  constructor() {
+    // Restaura la sesión del localStorage si existe.
+    const session = this.store.loadSession();
 
-  selectAvatar(imagePath: string): void {
-    this.selectedAvatar.set(imagePath);
+    if (session) {
+      this.studentName.set(session.name);
+      this.selectedAvatar.set(session.avatar);
+      this.hasStarted.set(true);
+    }
   }
 
-  startExploring(): void {
-    this.attemptedStart.set(true);
-
-    if (this.profileForm.invalid) {
-      this.profileForm.markAllAsTouched();
-      return;
-    }
-
-    if (!this.selectedAvatar()) {
-      return;
-    }
-
+  /** Se llama cuando LoginComponent emite (sessionStarted). */
+  onSessionStarted(session: Session): void {
+    this.studentName.set(session.name);
+    this.selectedAvatar.set(session.avatar);
     this.hasStarted.set(true);
   }
 
-  changeAvatar(): void {
+  /** Cierra sesión: limpia localStorage y vuelve al login. */
+  logout(): void {
+    this.store.clearSession();
+    this.studentName.set('');
+    this.selectedAvatar.set(null);
     this.hasStarted.set(false);
-    this.attemptedStart.set(false);
   }
 }

@@ -1,84 +1,24 @@
 <main class="welcome">
-  <header class="brand">
-    <span class="brand__globe" aria-hidden="true">🌍</span>
-    <h1>GeoDudas</h1>
-    <p>Explora, aprende y comprende el mundo</p>
+  <!-- ── Encabezado de marca ────────────────────────────────── -->
+  <header class="brand" [class.brand--compact]="hasStarted()">
+    <img class="brand__logo" src="/images/logo-geodudas.svg" alt="" />
+    <div class="brand__text">
+      <h1>GeoDudas</h1>
+      <p>Explora, aprende y comprende el mundo</p>
+    </div>
   </header>
 
-  <section class="welcome-card" *ngIf="!hasStarted(); else studentDashboard">
-    <span class="welcome-card__sparkle" aria-hidden="true">✨</span>
+  <!-- ── Vista de login ────────────────────────────────────── -->
+  <ng-container *ngIf="!hasStarted(); else studentDashboard">
+    <app-login (sessionStarted)="onSessionStarted($event)"></app-login>
+  </ng-container>
 
-    <h2>¡Hola, explorador!</h2>
-    <p class="welcome-card__intro">Escribe tu nombre y elige tu avatar</p>
-
-    <form [formGroup]="profileForm" (ngSubmit)="startExploring()">
-      <label class="name-label" for="student-name">Tu nombre</label>
-
-      <input
-        id="student-name"
-        class="name-input"
-        type="text"
-        formControlName="name"
-        placeholder="Escribe tu nombre"
-        maxlength="25"
-        autocomplete="given-name"
-      >
-
-      <p
-        class="form-message"
-        *ngIf="
-          profileForm.controls.name.invalid &&
-          (profileForm.controls.name.touched || attemptedStart())
-        "
-      >
-        Escribe al menos 2 letras para continuar.
-      </p>
-
-      <h3>Elige tu avatar</h3>
-      <p class="avatar-hint">Toca la imagen que más te guste</p>
-
-      <div class="avatars">
-        <button
-          *ngFor="let avatar of avatars; let i = index"
-          class="avatar-card"
-          [class.avatar-card--selected]="selectedAvatar() === avatar"
-          [attr.aria-label]="'Seleccionar avatar ' + (i + 1)"
-          [attr.aria-pressed]="selectedAvatar() === avatar"
-          type="button"
-          (click)="selectAvatar(avatar)"
-        >
-          <img class="avatar-card__image" [src]="avatar" alt="">
-
-          <span
-            class="avatar-card__check"
-            *ngIf="selectedAvatar() === avatar"
-            aria-hidden="true"
-          >
-            ✓
-          </span>
-        </button>
-      </div>
-
-      <p class="form-message" *ngIf="attemptedStart() && !selectedAvatar()">
-        Elige un avatar para comenzar.
-      </p>
-
-      <button class="start-button" type="submit">
-        <span aria-hidden="true">🧭</span>
-        ¡Empezar a explorar!
-        <span aria-hidden="true">➜</span>
-      </button>
-    </form>
-
-    <p class="welcome-card__footnote">
-      🌟 Descubre lugares, historias y culturas increíbles 🌟
-    </p>
-  </section>
-
+  <!-- ── Vista del dashboard (post-login) ──────────────────── -->
   <ng-template #studentDashboard>
     <app-dashboard-estudiante
-      [studentName]="profileForm.controls.name.value"
+      [studentName]="studentName()"
       [avatar]="selectedAvatar()"
+      (loggedOut)="logout()"
     ></app-dashboard-estudiante>
   </ng-template>
 </main>

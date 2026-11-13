@@ -2,116 +2,159 @@
   <header class="student-header">
     <div class="student-info">
       <div class="student-avatar">
-        <img *ngIf="avatar(); else defaultAvatar" [src]="avatar()" alt="">
+        <img *ngIf="avatar(); else defaultAvatar" [src]="avatar()" alt="" />
 
         <ng-template #defaultAvatar>
-          <span aria-hidden="true">🧭</span>
+          <app-icon name="compass-duotone"></app-icon>
         </ng-template>
       </div>
 
       <div>
         <p class="eyebrow">¡Tu aventura continúa!</p>
         <h1>¡Hola, {{ studentName() }}!</h1>
-        <span class="level-badge">⭐ Nivel {{ level }}</span>
+        <span class="level-badge"><app-icon name="star-duotone"></app-icon> Nivel {{ level() }}</span>
       </div>
     </div>
 
-    <div class="score-card">
-      <span aria-hidden="true">🌟</span>
-      <strong>{{ stars }}</strong>
-      <span>estrellas</span>
+    <div class="student-actions">
+      <div class="score-card">
+        <app-icon name="star-duotone"></app-icon>
+        <strong>{{ stars() }}</strong>
+        <span>estrellas</span>
+      </div>
+
+      <button
+        class="logout-button"
+        type="button"
+        aria-label="Cerrar sesión"
+        (click)="logout()"
+      >
+        <app-icon name="sign-out-bold"></app-icon>
+        <span>Cerrar sesión</span>
+      </button>
     </div>
   </header>
 
-  <section class="streak-card">
-    <span class="streak-card__fire" aria-hidden="true">🔥</span>
+  <ng-container [ngSwitch]="activeSection()">
+    <ng-container *ngSwitchCase="'Inicio'">
+      <!-- HomeComponent: bienvenida, taskflow y acceso rápido -->
+      <app-home
+        [studentName]="studentName()"
+        [avatar]="avatar()"
+        [stats]="homeStats()"
+        (navigateTo)="selectSection($event)"
+      ></app-home>
+    </ng-container>
 
-    <div class="streak-card__text">
-      <strong>¡Llevas {{ streak }} días aprendiendo!</strong>
-      <span>Un poquito cada día te lleva muy lejos.</span>
-    </div>
+    <ng-container *ngSwitchCase="'Misiones'">
+      <app-missions
+        (activityCompleted)="onActivityCompleted($event)"
+      ></app-missions>
+    </ng-container>
 
-    <span class="streak-card__sparkles" aria-hidden="true">✨</span>
-  </section>
+    <ng-container *ngSwitchCase="'Logros'">
+      <section class="section-panel">
+        <header class="section-panel__heading">
+          <div>
+            <p class="eyebrow">TUS LOGROS</p>
+            <h2>Medallas de explorador</h2>
+            <p>Completa misiones para desbloquear nuevas medallas.</p>
+          </div>
+          <span aria-hidden="true"><app-icon name="trophy-duotone"></app-icon></span>
+        </header>
 
-  <section class="adventure">
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">TU CAMINO DE APRENDIZAJE</p>
-        <h2>¿A dónde vamos hoy?</h2>
-      </div>
+        <div class="achievement-grid">
+          <article
+            *ngFor="let achievement of achievements()"
+            class="achievement-card"
+            [class.achievement-card--locked]="!achievement.unlocked"
+          >
+            <span class="achievement-card__icon" aria-hidden="true">
+              <app-icon [name]="achievement.unlocked ? achievement.icon : 'lock-key-duotone'"></app-icon>
+            </span>
+            <div>
+              <strong>{{ achievement.title }}</strong>
+              <p>{{ achievement.description }}</p>
+              <span class="achievement-card__state">
+                {{ achievement.unlocked ? 'Desbloqueado' : 'Bloqueado' }}
+              </span>
+            </div>
+          </article>
+        </div>
+      </section>
+    </ng-container>
 
-      <span class="map-icon" aria-hidden="true">🗺️</span>
-    </div>
+    <ng-container *ngSwitchCase="'Perfil'">
+      <section class="section-panel profile-panel">
+        <div class="profile-avatar">
+          <img *ngIf="avatar(); else profileDefaultAvatar" [src]="avatar()" alt="" />
 
-    <div class="xp-card">
-      <div class="xp-card__labels">
-        <strong>Tu progreso</strong>
-        <span>{{ xp }} / {{ xpForNextLevel }} XP</span>
-      </div>
+          <ng-template #profileDefaultAvatar>
+            <app-icon name="compass-duotone"></app-icon>
+          </ng-template>
+        </div>
 
-      <div
-        class="progress-track"
-        role="progressbar"
-        [attr.aria-valuenow]="xp"
-        [attr.aria-valuemin]="0"
-        [attr.aria-valuemax]="xpForNextLevel"
-        aria-label="Progreso de experiencia"
-      >
-        <div
-          class="progress-fill"
-          [style.width.%]="(xp / xpForNextLevel) * 100"
-        ></div>
-      </div>
-    </div>
+        <div class="profile-info">
+          <p class="eyebrow">TU PERFIL DE EXPLORADOR</p>
+          <h2>{{ studentName() }}</h2>
+          <p>
+            Sigue explorando el mapa para subir de nivel y descubrir nuevos
+            lugares del mundo.
+          </p>
 
-    <div class="topic-grid">
-      <button
-        *ngFor="let topic of topics"
-        class="topic-card"
-        [class.topic-card--green]="topic.color === 'green'"
-        [class.topic-card--blue]="topic.color === 'blue'"
-        [class.topic-card--orange]="topic.color === 'orange'"
-        [class.topic-card--purple]="topic.color === 'purple'"
-        [class.topic-card--pink]="topic.color === 'pink'"
-        type="button"
-        (click)="openTopic(topic)"
-      >
-        <span class="topic-card__icon" aria-hidden="true">
-          {{ topic.icon }}
-        </span>
+          <div class="profile-stats">
+            <div class="profile-stat">
+              <app-icon name="star-duotone"></app-icon>
+              <strong>Nivel {{ level() }}</strong>
+              <span>Nivel actual</span>
+            </div>
+            <div class="profile-stat">
+              <app-icon name="sparkle-duotone"></app-icon>
+              <strong>{{ stars() }}</strong>
+              <span>Estrellas</span>
+            </div>
+            <div class="profile-stat">
+              <app-icon name="star-four-duotone"></app-icon>
+              <strong>{{ xp() }} / {{ xpForNextLevel }}</strong>
+              <span>Experiencia</span>
+            </div>
+            <div class="profile-stat">
+              <app-icon name="fire-duotone"></app-icon>
+              <strong>{{ streak() }} días</strong>
+              <span>Racha</span>
+            </div>
+          </div>
 
-        <span class="topic-card__text">
-          <strong>{{ topic.title }}</strong>
-          <span>{{ topic.subtitle }}</span>
-        </span>
+          <div class="xp-card">
+            <div class="xp-card__labels">
+              <strong>Progreso al siguiente nivel</strong>
+              <span>{{ xp() }} / {{ xpForNextLevel }} XP</span>
+            </div>
 
-        <span class="topic-card__progress">
-          <span
-            class="topic-card__progress-fill"
-            [style.width.%]="topic.progress"
-          ></span>
-        </span>
+            <div
+              class="progress-track"
+              role="progressbar"
+              [attr.aria-valuenow]="xp()"
+              [attr.aria-valuemin]="0"
+              [attr.aria-valuemax]="xpForNextLevel"
+              aria-label="Progreso al siguiente nivel"
+            >
+              <div
+                class="progress-fill"
+                [style.width.%]="(xp() / xpForNextLevel) * 100"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </ng-container>
+  </ng-container>
 
-        <span class="topic-card__percent">
-          {{ topic.progress }}% explorado
-        </span>
-
-        <span class="topic-card__arrow" aria-hidden="true">➜</span>
-      </button>
-    </div>
-  </section>
-
-  <aside class="daily-tip">
-    <span class="daily-tip__icon" aria-hidden="true">💡</span>
-
-    <div>
-      <strong>¡Consejo de explorador!</strong>
-      <p>Observa, pregunta y descubre algo nuevo cada día.</p>
-    </div>
-  </aside>
-
-  <nav class="bottom-nav" aria-label="Navegación principal">
+  <nav
+    class="bottom-nav"
+    [class.bottom-nav--hidden]="navHidden() && !selectedTopic()"
+    aria-label="Navegación principal"
+  >
     <button
       *ngFor="let item of navigation"
       type="button"
@@ -120,8 +163,8 @@
       [attr.aria-current]="activeSection() === item.name ? 'page' : null"
       (click)="selectSection(item.name)"
     >
-      <span aria-hidden="true">{{ item.icon }}</span>
-      <span>{{ item.name }}</span>
+      <app-icon [name]="item.icon"></app-icon>
+      <span class="bottom-nav__label">{{ item.name }}</span>
     </button>
   </nav>
 
@@ -143,11 +186,11 @@
         aria-label="Cerrar"
         (click)="closeTopic()"
       >
-        ×
+        <app-icon name="x-bold"></app-icon>
       </button>
 
       <span class="topic-dialog__icon" aria-hidden="true">
-        {{ topic.icon }}
+        <app-icon [name]="topic.icon"></app-icon>
       </span>
 
       <h2>{{ topic.title }}</h2>
@@ -157,9 +200,9 @@
       <button
         class="topic-dialog__button"
         type="button"
-        (click)="closeTopic()"
+        (click)="exploreTopic(topic)"
       >
-        ¡A explorar! ➜
+        ¡A explorar! <app-icon name="arrow-right-bold"></app-icon>
       </button>
     </section>
   </div>

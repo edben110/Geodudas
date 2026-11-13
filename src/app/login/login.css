@@ -1,0 +1,254 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* ── Tarjeta principal ──────────────────────────────────────── */
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 800px);
+  margin: 0 auto;
+  padding: clamp(24px, 5vw, 48px);
+  border: var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  box-shadow: 6px 6px 0 var(--ink);
+  text-align: center;
+}
+
+.login-card__sparkle {
+  position: absolute;
+  top: 16px;
+  right: 22px;
+  color: var(--mustard);
+  font-size: 2.2rem;
+  animation: twinkle 1.8s ease-in-out infinite;
+}
+
+.login-card h2 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-title);
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 700;
+}
+
+.login-card__intro {
+  margin: 8px 0 26px;
+  color: var(--ink-soft);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* ── Campos del formulario ──────────────────────────────────── */
+.login__label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 800;
+  text-align: left;
+}
+
+.login__input {
+  width: 100%;
+  padding: 14px 18px;
+  border: var(--border);
+  border-radius: var(--radius);
+  outline: none;
+  color: var(--ink);
+  background: white;
+  font: inherit;
+  font-size: 1.1rem;
+  transition: background 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.login__input:focus {
+  background: var(--mustard-soft);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Estado de error: borde rojo (tomato) */
+.login__input--error {
+  border-color: var(--tomato);
+  background: var(--tomato-soft);
+}
+
+.login__input--error:focus {
+  background: var(--tomato-soft);
+  box-shadow: 3px 3px 0 var(--tomato);
+}
+
+/* Mensaje de validación */
+.login__message {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+  color: var(--tomato);
+  font-weight: 800;
+  text-align: left;
+}
+
+/* ── Sección avatar ─────────────────────────────────────────── */
+.login__avatar-title {
+  margin: 26px 0 0;
+  color: var(--ink);
+  font-family: var(--font-title);
+  font-size: 1.7rem;
+}
+
+.login__avatar-hint {
+  margin: 4px 0 18px;
+  color: var(--ink-soft);
+}
+
+.login__avatars {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+  margin: 0 0 28px;
+}
+
+/* ── Botón avatar ───────────────────────────────────────────── */
+.avatar-btn {
+  position: relative;
+  display: flex;
+  flex: 0 1 170px;
+  min-width: 0;
+  min-height: 180px;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  border: var(--border);
+  border-radius: var(--radius);
+  background: white;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.avatar-btn:nth-child(odd) {
+  transform: rotate(-1.2deg);
+}
+
+.avatar-btn:nth-child(even) {
+  transform: rotate(1.2deg);
+}
+
+.avatar-btn:hover {
+  transform: translate(-2px, -3px) rotate(0deg);
+  box-shadow: 5px 6px 0 var(--ink);
+}
+
+/* Modificador: avatar seleccionado */
+.avatar-btn--selected,
+.avatar-btn--selected:hover {
+  background: var(--teal-soft);
+  box-shadow: 5px 5px 0 var(--teal);
+  transform: translateY(-4px) rotate(0deg);
+}
+
+.avatar-btn__img {
+  display: block;
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
+}
+
+.avatar-btn__check {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: var(--border);
+  border-radius: 50%;
+  color: white;
+  background: var(--teal);
+  font-size: 1.1rem;
+}
+
+/* ── Botón submit ───────────────────────────────────────────── */
+.login__submit {
+  display: inline-flex;
+  width: min(100%, 580px);
+  min-height: 64px;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 24px;
+  border: var(--border);
+  border-radius: 999px;
+  color: var(--ink);
+  background: var(--mustard);
+  box-shadow: var(--shadow);
+  font: inherit;
+  font-family: var(--font-title);
+  font-size: clamp(1.15rem, 3.5vw, 1.5rem);
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease, opacity 140ms ease;
+}
+
+.login__submit:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--ink);
+}
+
+.login__submit:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+.login__submit--loading,
+.login__submit:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+/* ── Nota al pie ────────────────────────────────────────────── */
+.login-card__footnote {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 24px 0 0;
+  color: var(--ink-soft);
+  font-weight: 800;
+}
+
+/* ── Animaciones ────────────────────────────────────────────── */
+@keyframes twinkle {
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+
+  50% {
+    transform: rotate(12deg) scale(1.2);
+  }
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 620px) {
+  .login-card {
+    padding: 26px 16px;
+  }
+
+  .login__avatars {
+    gap: 12px;
+  }
+
+  .avatar-btn {
+    flex-basis: calc(50% - 6px);
+    min-height: 150px;
+  }
+
+  .avatar-btn__img {
+    height: 110px;
+  }
+}
