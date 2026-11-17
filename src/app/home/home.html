@@ -1,0 +1,229 @@
+<!-- ══ Bienvenida personalizada ══════════════════════════════ -->
+<section class="home-hero">
+  <div class="home-hero__text">
+    <p class="eyebrow">TU AVENTURA CONTINÚA</p>
+    <h2>¡Hola de nuevo, {{ studentName() }}!</h2>
+    <p class="home-hero__sub">¿Qué vas a descubrir hoy?</p>
+  </div>
+
+  <div
+    class="home-hero__avatar"
+    [class.home-hero__avatar--glow]="allDone()"
+    aria-hidden="true"
+  >
+    <img
+      *ngIf="avatar(); else defaultHeroIcon"
+      [src]="avatar()!"
+      alt=""
+    />
+    <ng-template #defaultHeroIcon>
+      <app-icon name="compass-duotone"></app-icon>
+    </ng-template>
+  </div>
+</section>
+
+<!-- ══ Estadísticas rápidas ══════════════════════════════════ -->
+<div class="stats-row">
+  <div class="stat-chip stat-chip--stars">
+    <app-icon name="star-duotone"></app-icon>
+    <strong>{{ stats().stars }}</strong>
+    <span>estrellas</span>
+  </div>
+
+  <div class="stat-chip stat-chip--level">
+    <app-icon name="trophy-duotone"></app-icon>
+    <strong>Nivel {{ stats().level }}</strong>
+    <span>actual</span>
+  </div>
+
+  <div class="stat-chip stat-chip--streak">
+    <app-icon name="fire-duotone"></app-icon>
+    <strong>{{ stats().streak }}</strong>
+    <span>{{ stats().streak === 1 ? 'día' : 'días' }}</span>
+  </div>
+</div>
+
+<!-- ══ Barra XP ═══════════════════════════════════════════════ -->
+<div class="xp-bar-card">
+  <div class="xp-bar-card__labels">
+    <strong>Experiencia</strong>
+    <span>{{ stats().xp }} / {{ stats().xpForNextLevel }} XP</span>
+  </div>
+
+  <div
+    class="xp-bar-track"
+    role="progressbar"
+    [attr.aria-valuenow]="stats().xp"
+    [attr.aria-valuemin]="0"
+    [attr.aria-valuemax]="stats().xpForNextLevel"
+    aria-label="Progreso de experiencia"
+  >
+    <div
+      class="xp-bar-fill"
+      [style.width.%]="(stats().xp / stats().xpForNextLevel) * 100"
+    ></div>
+  </div>
+</div>
+
+<!-- ══ Taskflow: misiones del día ════════════════════════════ -->
+<section class="taskflow" aria-labelledby="taskflow-heading">
+  <header class="taskflow__header">
+    <div>
+      <p class="eyebrow">TU LISTA DE HOY</p>
+      <h3 id="taskflow-heading">Retos del explorador</h3>
+    </div>
+
+    <!-- Progreso circular (barra) de tareas completadas -->
+    <div class="taskflow__progress-badge"
+      [class.taskflow__progress-badge--done]="allDone()"
+    >
+      <span class="taskflow__progress-num">{{ completedCount() }}/{{ tasks().length }}</span>
+      <span class="taskflow__progress-label">
+        {{ allDone() ? '¡Todo listo!' : 'completadas' }}
+      </span>
+    </div>
+  </header>
+
+  <!-- Barra de progreso global de tareas -->
+  <div
+    class="taskflow__bar-track"
+    role="progressbar"
+    [attr.aria-valuenow]="completedCount()"
+    [attr.aria-valuemax]="tasks().length"
+    aria-label="Progreso de tareas del día"
+  >
+    <div
+      class="taskflow__bar-fill"
+      [class.taskflow__bar-fill--done]="allDone()"
+      [style.width.%]="taskProgress()"
+    ></div>
+  </div>
+
+  <!-- Lista de tareas con *ngFor, ngClass y eventos -->
+  <ul class="task-list">
+    <li
+      *ngFor="let task of tasks()"
+      class="task-item"
+      [class.task-item--done]="task.done"
+    >
+      <!-- Checkbox interactivo con evento (click) y ngClass -->
+      <label
+        class="task-item__check-wrap"
+        [attr.aria-label]="'Marcar como ' + (task.done ? 'pendiente' : 'hecha') + ': ' + task.label"
+      >
+        <input
+          type="checkbox"
+          class="task-item__checkbox"
+          [checked]="task.done"
+          (change)="toggleTask(task.id)"
+          [attr.aria-checked]="task.done"
+        />
+        <span
+          class="task-item__check-box"
+          [class.task-item__check-box--checked]="task.done"
+          aria-hidden="true"
+        >
+          <app-icon
+            [name]="task.done ? 'check-bold' : 'target-bold'"
+          ></app-icon>
+        </span>
+      </label>
+
+      <!-- Ícono y texto de la tarea -->
+      <span
+        class="task-item__icon"
+        [class.task-item__icon--done]="task.done"
+        aria-hidden="true"
+      >
+        <app-icon [name]="task.icon"></app-icon>
+      </span>
+
+      <span class="task-item__label" [class.task-item__label--done]="task.done">
+        {{ task.label }}
+      </span>
+
+      <!-- Botón "Ir" para navegar a la sección de la tarea -->
+      <button
+        class="task-item__goto"
+        [class.task-item__goto--done]="task.done"
+        type="button"
+        [attr.aria-label]="'Ir a ' + task.targetSection"
+        (click)="goToTask(task)"
+      >
+        <app-icon name="arrow-right-bold"></app-icon>
+      </button>
+    </li>
+  </ul>
+
+  <!-- Mensaje de celebración: [hidden] lo mantiene en el DOM pero
+       lo oculta con display:none mientras no estén todas completadas.
+       Diferencia clave con *ngIf: el elemento ya existe, no se destruye. -->
+  <div class="taskflow__complete" [hidden]="!allDone()">
+    <app-icon name="check-circle-duotone"></app-icon>
+    <strong>¡Increíble! Completaste todos tus retos de hoy.</strong>
+
+    <button
+      class="taskflow__reset-btn"
+      type="button"
+      (click)="resetTasks()"
+    >
+      <app-icon name="arrow-left-bold"></app-icon>
+      Reiniciar lista
+    </button>
+  </div>
+</section>
+
+<!-- ══ Acceso rápido a secciones ═════════════════════════════ -->
+<!-- [hidden] oculta esta sección hasta que el estudiante haya
+     completado al menos una tarea: incentiva explorar el taskflow. -->
+<section
+  class="quick-access"
+  aria-labelledby="quick-access-heading"
+  [hidden]="completedCount() === 0"
+>
+  <p class="eyebrow" id="quick-access-heading">EXPLORA GEODUDAS</p>
+
+  <div class="quick-grid">
+    <button
+      class="quick-card quick-card--missions"
+      type="button"
+      aria-label="Ir a Misiones"
+      (click)="navigateTo.emit('Misiones')"
+    >
+      <span class="quick-card__icon" aria-hidden="true">
+        <app-icon name="target-duotone"></app-icon>
+      </span>
+      <strong>Misiones</strong>
+      <span>Pon a prueba tu conocimiento</span>
+      <app-icon class="quick-card__arrow" name="arrow-right-bold"></app-icon>
+    </button>
+
+    <button
+      class="quick-card quick-card--achievements"
+      type="button"
+      aria-label="Ir a Logros"
+      (click)="navigateTo.emit('Logros')"
+    >
+      <span class="quick-card__icon" aria-hidden="true">
+        <app-icon name="trophy-duotone"></app-icon>
+      </span>
+      <strong>Logros</strong>
+      <span>Ve tus medallas ganadas</span>
+      <app-icon class="quick-card__arrow" name="arrow-right-bold"></app-icon>
+    </button>
+
+    <button
+      class="quick-card quick-card--profile"
+      type="button"
+      aria-label="Ir a Perfil"
+      (click)="navigateTo.emit('Perfil')"
+    >
+      <span class="quick-card__icon" aria-hidden="true">
+        <app-icon name="user-circle-duotone"></app-icon>
+      </span>
+      <strong>Mi Perfil</strong>
+      <span>Tus estadísticas de explorador</span>
+      <app-icon class="quick-card__arrow" name="arrow-right-bold"></app-icon>
+    </button>
+  </div>
+</section>
