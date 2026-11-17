@@ -17,7 +17,6 @@ import {
   focusContinent,
   focusCountry,
   focusPlace,
-  setColombiaPlaceLabelsVisible,
   setColombiaPlacesVisible,
   setContinentFilter,
   setCountryHighlight,
@@ -64,7 +63,6 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
   readonly highlight = input<CountryTarget | null>(null);
   readonly highlightPlaceId = input<string | null>(null);
   readonly showPlaces = input(false);
-  readonly showPlaceLabels = input(false);
   readonly ariaLabel = input('Mapa interactivo del mundo');
 
   readonly countrySelected = output<CountryProperties>();
@@ -83,7 +81,6 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
         highlight: this.highlight(),
         highlightPlaceId: this.highlightPlaceId(),
         showPlaces: this.showPlaces(),
-        showPlaceLabels: this.showPlaceLabels(),
       };
 
       if (!this.loaded() || !this.worldMap) {
@@ -103,13 +100,20 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    this.worldMap = createWorldMap(this.mapContainer.nativeElement, {
+    const map = await createWorldMap(this.mapContainer.nativeElement, {
       mode: this.mode(),
       onCountryClick: (country) => this.countrySelected.emit(country),
       onPlaceClick: (place) => this.placeSelected.emit(place),
     });
 
-    this.worldMap.on('load', () => {
+    if (this.destroyed) {
+      map.remove();
+      return;
+    }
+
+    this.worldMap = map;
+
+    map.on('load', () => {
       this.loaded.set(true);
     });
   }
@@ -125,7 +129,6 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
     highlight: CountryTarget | null;
     highlightPlaceId: string | null;
     showPlaces: boolean;
-    showPlaceLabels: boolean;
   }): void {
     const map = this.worldMap;
     if (!map) {
@@ -135,10 +138,6 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
     setContinentFilter(map, options.continent);
     setCountryHighlight(map, options.highlight);
     setColombiaPlacesVisible(map, options.showPlaces);
-    setColombiaPlaceLabelsVisible(
-      map,
-      options.showPlaces && options.showPlaceLabels,
-    );
     setPlaceHighlight(map, options.highlightPlaceId);
 
     const focusKey = [

@@ -1,59 +1,41 @@
-# Geodudas
+# GeoDudas
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.23.
+GeoDudas es una aplicación educativa de ciencias sociales para explorar el mundo y aprender geografía de forma interactiva. El estudiante crea un perfil con nombre y avatar, consulta un mapa y resuelve misiones de seis retos: encontrar países, reconocer banderas y ubicar lugares de Colombia. Los aciertos otorgan experiencia, estrellas, progreso temático y logros.
 
-## Development server
+La aplicación está hecha con **Angular 21**, **TypeScript** y **MapLibre GL**. El progreso y la sesión se almacenan en el `localStorage` del navegador: no hay cuentas, servidor de datos ni sincronización entre dispositivos. El mapa de exploración utiliza teselas de OpenStreetMap; las misiones usan fronteras geográficas locales (`public/data/countries.geojson`) y las banderas se solicitan a flagcdn.com. Para esas imágenes y teselas se necesita conexión a Internet.
 
-To start a local development server, run:
+## Requisitos
 
-```bash
-ng serve
-```
+- Node.js 22.12 o superior y npm (el proyecto usa npm 11).
+- Un navegador moderno compatible con WebGL.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Ejecutar en local
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Desde la raíz del repositorio:
 
 ```bash
-ng generate component component-name
+npm ci
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Abre `http://localhost:4200/`. El servidor de desarrollo actualiza la página al modificar el código.
+
+## Compilar y probar
 
 ```bash
-ng generate --help
+npm run build
+npm test -- --watch=false
 ```
 
-## Building
+`npm run build` genera la versión de producción en `dist/geodudas/browser/`. El comando de pruebas ejecuta las pruebas unitarias con Vitest una sola vez. Para observar cambios continuamente, usa `npm test` (sal con `Ctrl+C`).
 
-To build the project run:
+## Estructura principal
 
-```bash
-ng build
-```
+- `src/app/login/`: creación y recuperación de la sesión local.
+- `src/app/dashboard-estudiante/` y `src/app/home/`: navegación, perfil, logros y progreso.
+- `src/app/missions/`: preguntas, interacción y resultados de las misiones.
+- `src/app/map/`: mapa interactivo, países y lugares de Colombia.
+- `src/app/shared/progress-store.ts`: persistencia local de sesión y progreso.
+- `public/`: recursos estáticos, GeoJSON, iconos e imágenes.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Versión publicada: https://geodudas.vercel.app

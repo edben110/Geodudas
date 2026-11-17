@@ -124,17 +124,39 @@ function placeFeatures(): FeatureCollection<Point> {
 }
 
 // Vite prebundles maplibre-gl but does not emit its worker next to the
-// optimized bundle, so point MapLibre at the copy served from public assets.
-if (typeof document !== 'undefined') {
-  maplibregl.setWorkerUrl(
-    new URL('maplibre-gl-worker.mjs', document.baseURI).href,
-  );
+// optimized bundle, so the worker is served as a static asset. Fetching it and
+// handing MapLibre a Blob URL avoids the dev server answering the worker
+// request with a 304 that leaves the module worker hanging.
+let workerUrlPromise: Promise<string> | null = null;
+
+function getWorkerUrl(): Promise<string> {
+  if (!workerUrlPromise) {
+    const source = new URL('maplibre-gl-worker.mjs', document.baseURI).href;
+
+    workerUrlPromise = fetch(source, { cache: 'no-cache' })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `No se pudo cargar el worker de MapLibre (${response.status}).`,
+          );
+        }
+
+        return response.text();
+      })
+      .then((code) =>
+        URL.createObjectURL(new Blob([code], { type: 'text/javascript' })),
+      );
+  }
+
+  return workerUrlPromise;
 }
 
-export function createWorldMap(
+export async function createWorldMap(
   container: string | HTMLElement,
   options: WorldMapOptions = {},
-): Map {
+): Promise<Map> {
+  maplibregl.setWorkerUrl(await getWorkerUrl());
+
   const mode = options.mode ?? 'explore';
   const isActivityMap = mode !== 'explore';
   const baseStyle: StyleSpecification = isActivityMap
@@ -217,6 +239,24 @@ export function createWorldMap(
       },
     });
 
+    if (mode === 'colombia') {
+      map.addSource('colombia-departamentos', {
+        type: 'geojson',
+        data: '/data/colombia-departamentos.geojson',
+      });
+
+      map.addLayer({
+        id: 'colombia-departamentos-line',
+        type: 'line',
+        source: 'colombia-departamentos',
+        paint: {
+          'line-color': '#9AA5B8',
+          'line-width': 0.9,
+          'line-opacity': 0.9,
+        },
+      });
+    }
+
     map.addLayer({
       id: 'paises-highlight-fill',
       type: 'fill',
@@ -277,25 +317,6 @@ export function createWorldMap(
         'circle-opacity': 0.92,
         'circle-stroke-color': '#1F2A44',
         'circle-stroke-width': 3,
-      },
-    });
-
-    map.addLayer({
-      id: 'colombia-lugares-label',
-      type: 'symbol',
-      source: 'colombia-lugares',
-      layout: {
-        visibility: 'none',
-        'text-field': ['get', 'name'],
-        'text-size': 12,
-        'text-offset': [0, 1.5],
-        'text-anchor': 'top',
-        'text-allow-overlap': true,
-      },
-      paint: {
-        'text-color': '#1F2A44',
-        'text-halo-color': '#FFFFFF',
-        'text-halo-width': 2,
       },
     });
 
@@ -447,19 +468,6 @@ export function setColombiaPlacesVisible(map: Map, visible: boolean): void {
     if (map.getLayer(layer)) {
       map.setLayoutProperty(layer, 'visibility', visible ? 'visible' : 'none');
     }
-  }
-}
-
-export function setColombiaPlaceLabelsVisible(
-  map: Map,
-  visible: boolean,
-): void {
-  if (map.getLayer('colombia-lugares-label')) {
-    map.setLayoutProperty(
-      'colombia-lugares-label',
-      'visibility',
-      visible ? 'visible' : 'none',
-    );
   }
 }
 
