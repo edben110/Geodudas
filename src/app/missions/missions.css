@@ -403,7 +403,9 @@
 }
 
 .activity__map {
-  min-height: 520px;
+  /* Altura definida: el 100% del mapa no debe retroalimentar la fila del grid. */
+  height: clamp(520px, 65vh, 680px);
+  min-height: 0;
 }
 
 .summary {
@@ -502,7 +504,7 @@
   }
 
   .activity__map {
-    min-height: 440px;
+    height: clamp(440px, 60vh, 560px);
   }
 }
 
